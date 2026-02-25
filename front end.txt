@@ -1,0 +1,125 @@
+import React, { useState } from 'react';
+
+const resources = [
+  { skill: 'JavaScript / TypeScript', level: 'Beginner → Advanced', title: 'The Complete JavaScript Course', provider: 'Udemy', type: 'Course', duration: '69 hrs', rating: 4.7, url: '#', free: false },
+  { skill: 'JavaScript / TypeScript', level: 'Intermediate', title: 'TypeScript Full Course', provider: 'freeCodeCamp', type: 'Video', duration: '4 hrs', rating: 4.8, url: '#', free: true },
+  { skill: 'Python', level: 'Beginner', title: 'Python for Everybody', provider: 'Coursera', type: 'Course', duration: '8 weeks', rating: 4.8, url: '#', free: true },
+  { skill: 'Python', level: 'Advanced', title: 'Python Data Structures', provider: 'edX', type: 'Course', duration: '6 weeks', rating: 4.6, url: '#', free: true },
+  { skill: 'React / Angular / Vue', level: 'Beginner → Advanced', title: 'React - The Complete Guide', provider: 'Udemy', type: 'Course', duration: '48 hrs', rating: 4.7, url: '#', free: false },
+  { skill: 'SQL / Databases', level: 'Beginner', title: 'SQL for Data Science', provider: 'Coursera', type: 'Course', duration: '4 weeks', rating: 4.6, url: '#', free: true },
+  { skill: 'Machine Learning / AI', level: 'Intermediate', title: 'Machine Learning Specialization', provider: 'Coursera (Andrew Ng)', type: 'Course', duration: '3 months', rating: 4.9, url: '#', free: false },
+  { skill: 'Data Analysis', level: 'Beginner', title: 'Google Data Analytics', provider: 'Coursera', type: 'Certificate', duration: '6 months', rating: 4.8, url: '#', free: true },
+  { skill: 'Cloud Platforms (AWS/Azure/GCP)', level: 'Beginner', title: 'AWS Cloud Practitioner', provider: 'AWS Training', type: 'Certificate', duration: '3 months', rating: 4.7, url: '#', free: true },
+  { skill: 'Docker & Kubernetes', level: 'Intermediate', title: 'Docker & Kubernetes: The Practical Guide', provider: 'Udemy', type: 'Course', duration: '24 hrs', rating: 4.7, url: '#', free: false },
+  { skill: 'Data Visualization', level: 'Beginner', title: 'Data Visualization with Python', provider: 'Coursera', type: 'Course', duration: '3 weeks', rating: 4.5, url: '#', free: true },
+  { skill: 'Communication', level: 'All levels', title: 'Effective Communication Skills', provider: 'LinkedIn Learning', type: 'Course', duration: '5 hrs', rating: 4.6, url: '#', free: false },
+];
+
+const providerColor = { 'Udemy': '#a435f0', 'Coursera': '#0056d2', 'freeCodeCamp': '#0a0a23', 'edX': '#02262b', 'AWS Training': '#ff9900', 'LinkedIn Learning': '#0a66c2' };
+
+export default function LearningResources({ navigate, assessmentData }) {
+  const [filter, setFilter] = useState('All');
+  const [typeFilter, setTypeFilter] = useState('All');
+
+  const weakSkills = assessmentData
+    ? Object.entries(assessmentData.skills || {}).filter(([, v]) => v < 2).map(([k]) => k)
+    : [];
+
+  const filters = ['All', 'Free Only', ...new Set(resources.map(r => r.skill))];
+  const typeFilters = ['All', 'Course', 'Certificate', 'Video'];
+
+  const filtered = resources.filter(r => {
+    const matchFilter = filter === 'All' ? true : filter === 'Free Only' ? r.free : r.skill === filter;
+    const matchType = typeFilter === 'All' ? true : r.type === typeFilter;
+    return matchFilter && matchType;
+  });
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '40px 20px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '0 20px' }}>
+        <button onClick={() => navigate('dashboard')} style={backBtn}>← Back to Dashboard</button>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 700, marginBottom: '6px' }}>Learning Resources</h1>
+        <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '24px' }}>Curated courses and materials to bridge your skill gaps</p>
+
+        {/* Priority recommendations */}
+        {weakSkills.length > 0 && (
+          <div style={{ marginBottom: '28px', padding: '18px 20px', background: 'rgba(79,70,229,0.1)', border: '1px solid rgba(79,70,229,0.25)', borderRadius: '14px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 700, color: '#818cf8', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '8px' }}>⊛ Priority Learning Areas Based on Your Gaps</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {weakSkills.slice(0, 6).map(s => (
+                <button key={s} onClick={() => setFilter(s)} style={{ background: 'rgba(79,70,229,0.2)', border: '1px solid rgba(129,140,248,0.3)', borderRadius: '100px', padding: '4px 14px', fontSize: '12px', color: '#a78bfa', cursor: 'pointer' }}>{s}</button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Filters */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
+            {typeFilters.map(t => (
+              <button key={t} onClick={() => setTypeFilter(t)} style={typeFilter === t ? activeChip : chip}>{t}</button>
+            ))}
+            <div style={{ width: 1, background: 'rgba(79,70,229,0.2)', margin: '0 4px' }} />
+            {['All', 'Free Only'].map(f => (
+              <button key={f} onClick={() => setFilter(f)} style={filter === f ? activeChip : chip}>{f}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Resources Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          {filtered.map((r, i) => (
+            <ResourceCard key={i} resource={r} isRecommended={weakSkills.includes(r.skill)} />
+          ))}
+        </div>
+
+        {filtered.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>No resources found for this filter.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ResourceCard({ resource: r, isRecommended }) {
+  return (
+    <div style={{
+      background: 'var(--bg-card)', border: `1px solid ${isRecommended ? 'rgba(129,140,248,0.35)' : 'rgba(79,70,229,0.15)'}`,
+      borderRadius: '16px', padding: '22px',
+      transition: 'all 0.25s ease', position: 'relative',
+    }}
+    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(0,0,0,0.3)'; }}
+    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}
+    >
+      {isRecommended && (
+        <div style={{ position: 'absolute', top: 14, right: 14, fontSize: '10px', fontWeight: 700, color: '#818cf8', background: 'rgba(79,70,229,0.2)', padding: '2px 8px', borderRadius: '100px', letterSpacing: '0.05em' }}>RECOMMENDED</div>
+      )}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+        <div style={{ width: 32, height: 32, borderRadius: '8px', background: `${providerColor[r.provider] || '#4f46e5'}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, color: providerColor[r.provider] || '#818cf8', border: `1px solid ${providerColor[r.provider] || '#4f46e5'}44` }}>
+          {r.provider.charAt(0)}
+        </div>
+        <div style={{ fontSize: '11px', color: '#64748b' }}>{r.provider}</div>
+        <div style={{ marginLeft: 'auto', fontSize: '10px', padding: '2px 8px', borderRadius: '100px', background: r.free ? 'rgba(16,185,129,0.15)' : 'rgba(124,58,237,0.15)', color: r.free ? '#10b981' : '#a78bfa', fontWeight: 600, border: `1px solid ${r.free ? 'rgba(16,185,129,0.3)' : 'rgba(124,58,237,0.3)'}` }}>
+          {r.free ? 'FREE' : 'PAID'}
+        </div>
+      </div>
+      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 700, marginBottom: '6px', lineHeight: 1.4 }}>{r.title}</h3>
+      <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '12px' }}>{r.skill} · {r.level}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#94a3b8', marginBottom: '16px' }}>
+        <span>⏱ {r.duration}</span>
+        <span>★ {r.rating}</span>
+        <span style={{ background: 'rgba(79,70,229,0.15)', padding: '2px 8px', borderRadius: '4px', color: '#818cf8' }}>{r.type}</span>
+      </div>
+      <button style={{ width: '100%', padding: '9px', background: 'rgba(79,70,229,0.15)', border: '1px solid rgba(79,70,229,0.3)', borderRadius: '8px', color: '#818cf8', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 600, transition: 'all 0.2s' }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(79,70,229,0.3)'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(79,70,229,0.15)'; }}
+      >
+        View Course →
+      </button>
+    </div>
+  );
+}
+
+const backBtn = { background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: 0 };
+const chip = { padding: '6px 14px', borderRadius: '100px', border: '1px solid rgba(79,70,229,0.2)', background: 'transparent', color: '#94a3b8', cursor: 'pointer', fontSize: '12px', fontWeight: 500, fontFamily: 'var(--font-body)', transition: 'all 0.2s' };
+const activeChip = { ...chip, background: 'linear-gradient(135deg, rgba(79,70,229,0.4), rgba(124,58,237,0.3))', borderColor: 'rgba(129,140,248,0.5)', color: '#c4b5fd' };
