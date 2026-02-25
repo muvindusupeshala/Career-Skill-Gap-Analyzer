@@ -1,0 +1,153 @@
+import React, { useState } from 'react';
+
+const careers = [
+  {
+    id: 1, title: 'Software Engineer', icon: '⬡', color: '#4f46e5',
+    desc: 'Design and develop software applications and systems.',
+    requiredSkills: {
+      'JavaScript / TypeScript': 3, 'React / Angular / Vue': 3, 'Node.js / Backend Dev': 3,
+      'SQL / Databases': 2, 'Problem Solving': 4, 'Communication': 2,
+    },
+    salary: 'LKR 80K–200K/mo', demand: 'Very High', growth: '+22%',
+  },
+  {
+    id: 2, title: 'Data Analyst', icon: '◎', color: '#7c3aed',
+    desc: 'Analyze data to discover insights and support decisions.',
+    requiredSkills: {
+      'Python': 3, 'SQL / Databases': 4, 'Data Analysis': 4,
+      'Data Visualization': 3, 'Statistics & Probability': 3, 'Communication': 3,
+    },
+    salary: 'LKR 70K–160K/mo', demand: 'High', growth: '+20%',
+  },
+  {
+    id: 3, title: 'ML / AI Engineer', icon: '✦', color: '#6d28d9',
+    desc: 'Build machine learning models and AI-powered systems.',
+    requiredSkills: {
+      'Python': 4, 'Machine Learning / AI': 4, 'Data Analysis': 3,
+      'Statistics & Probability': 4, 'SQL / Databases': 2, 'Problem Solving': 4,
+    },
+    salary: 'LKR 100K–250K/mo', demand: 'Very High', growth: '+35%',
+  },
+  {
+    id: 4, title: 'DevOps Engineer', icon: '⟁', color: '#1d4ed8',
+    desc: 'Bridge dev and operations with automation and infrastructure.',
+    requiredSkills: {
+      'Cloud Platforms (AWS/Azure/GCP)': 4, 'Docker & Kubernetes': 4, 'CI/CD Pipelines': 4,
+      'Linux / System Admin': 3, 'Problem Solving': 3, 'Teamwork & Collaboration': 3,
+    },
+    salary: 'LKR 90K–220K/mo', demand: 'High', growth: '+28%',
+  },
+  {
+    id: 5, title: 'Full Stack Developer', icon: '◈', color: '#059669',
+    desc: 'Develop both frontend and backend parts of web applications.',
+    requiredSkills: {
+      'JavaScript / TypeScript': 4, 'React / Angular / Vue': 3, 'Node.js / Backend Dev': 3,
+      'SQL / Databases': 3, 'Python': 2, 'Problem Solving': 3,
+    },
+    salary: 'LKR 85K–210K/mo', demand: 'Very High', growth: '+25%',
+  },
+  {
+    id: 6, title: 'Cybersecurity Analyst', icon: '⊛', color: '#dc2626',
+    desc: 'Protect systems and networks from cyber threats.',
+    requiredSkills: {
+      'Linux / System Admin': 3, 'Cloud Platforms (AWS/Azure/GCP)': 2,
+      'Problem Solving': 4, 'Communication': 3, 'Time Management': 3,
+    },
+    salary: 'LKR 75K–180K/mo', demand: 'High', growth: '+18%',
+  },
+];
+
+const levels = ['None', 'Beginner', 'Intermediate', 'Advanced', 'Expert'];
+const demandColor = { 'Very High': '#10b981', 'High': '#818cf8', 'Medium': '#f59e0b' };
+
+export default function CareerPathMapping({ navigate, assessmentData }) {
+  const [selected, setSelected] = useState(null);
+
+  return (
+    <div style={{ minHeight: '100vh', background: 'var(--bg-dark)', padding: '40px 20px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto' }}>
+        <button onClick={() => navigate('dashboard')} style={backBtn}>← Back to Dashboard</button>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 700, marginBottom: '6px' }}>IT Career Paths</h1>
+        <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '32px' }}>Explore career paths and their skill requirements</p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+          {careers.map(career => (
+            <CareerCard key={career.id} career={career} onClick={() => setSelected(selected?.id === career.id ? null : career)} isSelected={selected?.id === career.id} assessmentData={assessmentData} />
+          ))}
+        </div>
+
+        {selected && (
+          <CareerDetail career={selected} assessmentData={assessmentData} navigate={navigate} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CareerCard({ career, onClick, isSelected, assessmentData }) {
+  const score = assessmentData?.careerScores?.[career.title];
+  return (
+    <button onClick={onClick} style={{
+      background: isSelected ? 'rgba(79,70,229,0.15)' : 'var(--bg-card)',
+      border: `1px solid ${isSelected ? 'rgba(129,140,248,0.5)' : 'rgba(79,70,229,0.2)'}`,
+      borderRadius: '16px', padding: '24px', cursor: 'pointer', textAlign: 'left', color: '#f1f5f9',
+      transition: 'all 0.25s ease',
+    }}
+    onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor = 'rgba(129,140,248,0.4)'; e.currentTarget.style.transform = 'translateY(-2px)'; } }}
+    onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor = 'rgba(79,70,229,0.2)'; e.currentTarget.style.transform = 'translateY(0)'; } }}
+    >
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+        <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${career.color}22`, border: `1px solid ${career.color}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>{career.icon}</div>
+        <span style={{ fontSize: '11px', padding: '4px 10px', borderRadius: '100px', background: `${demandColor[career.demand]}22`, color: demandColor[career.demand], fontWeight: 600, border: `1px solid ${demandColor[career.demand]}44` }}>{career.demand}</span>
+      </div>
+      <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 700, marginBottom: '6px' }}>{career.title}</h3>
+      <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.5, marginBottom: '14px' }}>{career.desc}</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+        <span style={{ color: '#10b981', fontWeight: 600 }}>{career.salary}</span>
+        <span style={{ color: '#818cf8', fontWeight: 600 }}>{career.growth}</span>
+      </div>
+      {score !== undefined && (
+        <div style={{ marginTop: '12px', height: 4, background: 'rgba(79,70,229,0.1)', borderRadius: 2 }}>
+          <div style={{ height: '100%', width: `${score}%`, background: score > 70 ? '#10b981' : score > 40 ? '#818cf8' : '#f59e0b', borderRadius: 2, transition: 'width 0.5s ease' }} />
+        </div>
+      )}
+      {score !== undefined && <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>Your match: {score}%</div>}
+    </button>
+  );
+}
+
+function CareerDetail({ career, assessmentData, navigate }) {
+  return (
+    <div style={{ marginTop: '32px', background: 'var(--bg-card)', border: '1px solid rgba(129,140,248,0.3)', borderRadius: '20px', padding: '32px' }}>
+      <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, marginBottom: '24px' }}>
+        <span style={{ color: '#818cf8' }}>{career.icon}</span> {career.title} — Required Skills
+      </h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {Object.entries(career.requiredSkills).map(([skill, required]) => {
+          const current = assessmentData?.skills?.[skill] ?? null;
+          const met = current !== null && current >= required;
+          return (
+            <div key={skill}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ fontSize: '14px', fontWeight: 500 }}>{skill}</span>
+                <div style={{ display: 'flex', gap: '8px', fontSize: '12px' }}>
+                  <span style={{ color: '#64748b' }}>Required: <b style={{ color: '#818cf8' }}>{levels[required]}</b></span>
+                  {current !== null && <span style={{ color: met ? '#10b981' : '#f59e0b' }}>You: {levels[current]} {met ? '✓' : '↑'}</span>}
+                </div>
+              </div>
+              <div style={{ height: 6, background: 'rgba(79,70,229,0.1)', borderRadius: 3, position: 'relative' }}>
+                <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${(required / 4) * 100}%`, background: 'rgba(129,140,248,0.3)', borderRadius: 3 }} />
+                {current !== null && <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${(current / 4) * 100}%`, background: met ? '#10b981' : '#f59e0b', borderRadius: 3, transition: 'width 0.5s ease' }} />}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <button onClick={() => navigate('skill-gap')} style={{ marginTop: '24px', padding: '12px 24px', background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' }}>
+        View My Skill Gap →
+      </button>
+    </div>
+  );
+}
+
+const backBtn = { background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: 0 };
