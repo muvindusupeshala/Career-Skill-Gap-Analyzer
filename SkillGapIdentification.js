@@ -25,7 +25,7 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
         <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center', padding: '80px 20px' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>◎</div>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '24px', marginBottom: '12px' }}>Assessment Required</h2>
-          <p style={{ color: '#64748b', marginBottom: '24px' }}>Complete your skill assessment to see your skill gaps.</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '24px' }}>Complete your skill assessment to see your skill gaps.</p>
           <button onClick={() => navigate('skill-assessment')} style={primaryBtn}>Take Assessment →</button>
         </div>
       </div>
@@ -46,7 +46,7 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
       <div style={{ maxWidth: 820, margin: '0 auto', padding: '0 20px' }}>
         <button onClick={() => navigate('dashboard')} style={backBtn}>← Back to Dashboard</button>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 700, marginBottom: '6px' }}>Skill Gap Identification</h1>
-        <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '32px' }}>Compare your skills against your target career requirements</p>
+        <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '32px' }}>Compare your skills against your target career requirements</p>
 
         {/* Career selector */}
         <div style={{ marginBottom: '28px' }}>
@@ -55,8 +55,8 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
             {Object.keys(careerRequirements).map(c => (
               <button key={c} onClick={() => setTargetCareer(c)} style={{
                 padding: '8px 18px', borderRadius: '100px', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 500,
-                background: targetCareer === c ? 'linear-gradient(135deg, #4f46e5, #7c3aed)' : 'rgba(79,70,229,0.1)',
-                color: targetCareer === c ? '#fff' : '#818cf8',
+                background: targetCareer === c ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'rgba(79,70,229,0.1)',
+                color: targetCareer === c ? 'var(--text-primary)' : 'var(--primary-light)',
                 transition: 'all 0.2s',
               }}>{c}</button>
             ))}
@@ -65,7 +65,7 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
 
         {/* Readiness Score */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px', marginBottom: '28px' }}>
-          <StatCard label="Career Readiness" value={`${readiness}%`} color={readiness >= 70 ? '#10b981' : readiness >= 40 ? '#818cf8' : '#ef4444'} />
+          <StatCard label="Career Readiness" value={`${readiness}%`} color={readiness >= 70 ? '#10b981' : readiness >= 40 ? 'var(--primary-light)' : '#ef4444'} />
           <StatCard label="Skills to Improve" value={gaps.filter(g => g.diff > 0).length} color="#f59e0b" />
           <StatCard label="Skills on Track" value={gaps.filter(g => g.diff <= 0).length} color="#10b981" />
           <StatCard label="Total Gap Levels" value={totalGap} color="#ef4444" />
@@ -74,7 +74,7 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
         {/* Gap visualization */}
         <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '20px', padding: '28px' }}>
           <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 700, marginBottom: '24px' }}>
-            Skill Gap: <span style={{ color: '#818cf8' }}>{targetCareer}</span>
+            Skill Gap: <span style={{ color: 'var(--primary-light)' }}>{targetCareer}</span>
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {gaps.map(({ skill, required, current, diff }) => {
@@ -84,8 +84,8 @@ export default function SkillGapIdentification({ navigate, assessmentData }) {
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', flexWrap: 'wrap', gap: '4px' }}>
                     <span style={{ fontSize: '14px', fontWeight: 500, color: '#e2e8f0' }}>{skill}</span>
                     <div style={{ display: 'flex', gap: '10px', fontSize: '12px', alignItems: 'center' }}>
-                      <span style={{ color: '#64748b' }}>Need: <b style={{ color: '#94a3b8' }}>{levels[required]}</b></span>
-                      <span style={{ color: '#64748b' }}>Have: <b style={{ color: '#818cf8' }}>{levels[current]}</b></span>
+                      <span style={{ color: 'var(--text-muted)' }}>Need: <b style={{ color: 'var(--text-secondary)' }}>{levels[required]}</b></span>
+                      <span style={{ color: 'var(--text-muted)' }}>Have: <b style={{ color: 'var(--primary-light)' }}>{levels[current]}</b></span>
                       <span style={{ padding: '2px 8px', borderRadius: '100px', background: `${gap.color}22`, color: gap.color, fontWeight: 600, border: `1px solid ${gap.color}44` }}>{gap.text}</span>
                     </div>
                   </div>
@@ -118,13 +118,13 @@ function StatCard({ label, value, color }) {
   return (
     <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '14px', padding: '20px', textAlign: 'center' }}>
       <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', fontWeight: 800, color, marginBottom: '4px' }}>{value}</div>
-      <div style={{ fontSize: '12px', color: '#64748b' }}>{label}</div>
+      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{label}</div>
     </div>
   );
 }
 
 const pageStyle = { minHeight: '100vh', background: 'var(--bg-dark)', padding: '40px 20px' };
-const backBtn = { background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: 0 };
-const lbl = { display: 'block', fontSize: '12px', fontWeight: 600, color: '#94a3b8', marginBottom: '8px', letterSpacing: '0.05em', textTransform: 'uppercase' };
-const primaryBtn = { background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', color: '#fff', border: 'none', borderRadius: '10px', padding: '12px 24px', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', boxShadow: '0 4px 16px rgba(79,70,229,0.35)' };
-const secondaryBtn = { background: 'transparent', color: '#818cf8', border: '1px solid rgba(79,70,229,0.3)', borderRadius: '10px', padding: '12px 24px', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' };
+const backBtn = { background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '13px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '6px', padding: 0 };
+const lbl = { display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', letterSpacing: '0.05em', textTransform: 'uppercase' };
+const primaryBtn = { background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: 'var(--text-primary)', border: 'none', borderRadius: '10px', padding: '12px 24px', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px', boxShadow: '0 4px 16px rgba(79,70,229,0.35)' };
+const secondaryBtn = { background: 'transparent', color: 'var(--primary-light)', border: '1px solid rgba(79,70,229,0.3)', borderRadius: '10px', padding: '12px 24px', cursor: 'pointer', fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' };
